@@ -1,13 +1,44 @@
 import requests
-from pyquery import pyquery as pq
+import random
+from threading import Thread
 
-url = 'https://greasyfork.org/zh-CN/scripts'
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0;'
-    ' Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41'
-}
-response = requests.get(url=url, headers=headers).text
-doc = pq(response)
-script_link = doc('.script-link')
-print(script_link)
+url = 'http://10.16.170.184:8080/'
+
+
+def get_ip(point):
+    str_ip = ''
+    for i in range(4):
+        if i != 3:
+            str_ip += str(random.choice(point)) + '.'
+        else:
+            str_ip += str(random.choice(point)) + ':' + str(random.choice([i for i in range(3000, 65535)]))
+    return str_ip
+
+
+def get_pool():
+    point = [i for i in range(1, 255)]
+    for i in range(10000):
+        yield {"http": get_ip(point)}
+
+
+def thread_request():
+    while True:
+        for i in range(10):
+            r = requests.get(url)
+            if r.status_code == 200:
+                print('请求正常,继续。。。。。。。')
+
+
+def main():
+    thread_list = []
+    for i in range(1000):
+        thread = Thread(target=thread_request)
+        thread.start()
+        thread_list.append(thread)
+
+    for thread in thread_list:
+        thread.join()
+
+
+if __name__ == "__main__":
+    main()
