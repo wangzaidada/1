@@ -7,13 +7,16 @@ import os
 import requests
 
 root = "C:/Users/DUAN/Downloads//"
-url = "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00132-1104.jpg"
+url = "https://img.ivsky.com/img/tupian/t/202107/15/banli-001.jpg"
+headers = {  # 请求头伪装
+    'User-Agent': 'Mozilla/5.0'
+}
 path = root + url.split('/')[-1]
 try:
     if not os.path.exists(root):
         os.mkdir(root)
     if not os.path.exists(path):
-        r = requests.get(url)
+        r = requests.get(url, headers= headers)
         print(r.status_code)
         with open(path, 'wb') as f:
             write = f.write(r.content)

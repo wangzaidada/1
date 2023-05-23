@@ -4,14 +4,14 @@
 日期：2021年06月07日
 """
 import requests
-if __name__ == "__main__":
-    url = 'http://www.sogou.com/'   # step 1:指定url
-    # step 2:发起请求
-    response = requests.get(url=url)
-    # step 3:获取响应数据.txt返回的是字符串形式的响应数据
-    page_txt = response.text
-    print(page_txt)
-    # step 4:持久化存储
-    with open('./sogou.html', 'w', encoding="utf-8") as fp:
-        fp.write(page_txt)
-    print("爬取数据结束！！！！")
+
+headers = {  # 请求头伪装
+    'User-Agent': 'Mozilla/5.0'
+}
+url = 'https://buy.autohome.com.cn/110000/110100/index.html#pvareaid=3311447'
+x = requests.get(url, headers=headers)
+print(x.status_code)
+fp = open('ce.html', 'w', encoding='utf-8')
+fp.write(x.text)
+fp.close()
+print('ok')
