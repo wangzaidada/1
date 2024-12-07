@@ -6,13 +6,16 @@
 import requests
 from bs4 import BeautifulSoup
 
-headers = {                                  # 请求头伪装
-        'User-Agent': 'Mozilla/5.0'
-    }
+headers = {  # 请求头伪装
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0;'
+                  ' Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41'
+}
 
 
 def getHTMLText(url):
     try:
+
         r = requests.get(url, headers, timeout=30)
         r.raise_for_status()
         r.encoding = r.apparent_encoding
@@ -22,7 +25,7 @@ def getHTMLText(url):
 
 
 def getList(page):
-    page_list = page.find('dl', class_="zjlist").find_all('a')  # 解析目录
+    page_list = page.find('dl', class_="listmain").find_all('a')  # 解析目录
     return page_list
 
 
@@ -46,15 +49,15 @@ def getBookInfo(lst, baseurl, book_name, book_author):
 
 
 def main():
-    url = "https://www.bbiquge.net/book_21110/"  # 笔趣阁网址
+    url = "https://www.3bqg.cc/book/88072/"  # 笔趣阁网址
     page = getHTMLText(url)
     page = BeautifulSoup(page, 'lxml')
-    book = page.find('h1').text.split(' / ')
-    book_name, book_author = book[0], book[1]
+    book = page.find('h1')
+    book_author = ''
+    book_name = book
     book_list = getList(page)
     print('开始下载：{}'.format(book_name))
     getBookInfo(book_list, url, book_name, book_author)
 
 
 main()
-
